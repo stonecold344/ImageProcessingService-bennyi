@@ -51,17 +51,81 @@ class Img:
             self.data[i] = res
 
     def rotate(self):
-        # TODO remove the `raise` below, and write your implementation
-        raise NotImplementedError()
+        if self.data is None:
+            raise RuntimeError("No image data to process.")
 
-    def salt_n_pepper(self):
-        # TODO remove the `raise` below, and write your implementation
-        raise NotImplementedError()
+        height = len(self.data)
+        width = len(self.data[0])
+
+        # Rotate the image data clockwise
+        rotated_data = [[0] * height for _ in range(width)]
+        for i in range(width):
+            for j in range(height):
+                rotated_data[i][j] = self.data[height - j - 1][i]
+
+        self.data = rotated_data
+
+    def counter_rotate(self):
+        if self.data is None:
+            raise RuntimeError("No image data to process.")
+
+        height = len(self.data)
+        width = len(self.data[0])
+
+        # Rotate the image data counterclockwise
+        rotated_data = [[0] * height for _ in range(width)]
+        for i in range(width):
+            for j in range(height):
+                rotated_data[i][j] = self.data[j][width - i - 1]
+
+        self.data = rotated_data
 
     def concat(self, other_img, direction='horizontal'):
-        # TODO remove the `raise` below, and write your implementation
-        raise NotImplementedError()
+        if self.data is None or other_img.data is None:
+            raise RuntimeError("No image data to process.")
+
+        # Check compatibility of image dimensions for concatenation
+        if direction == 'horizontal':
+            if len(self.data) != len(other_img.data):
+                raise RuntimeError("Images have different heights. Cannot concatenate horizontally.")
+            concatenated_data = [self.data[i] + other_img.data[i] for i in range(len(self.data))]
+        else:  # vertical concatenation
+            if len(self.data[0]) != len(other_img.data[0]):
+                raise RuntimeError("Images have different widths. Cannot concatenate vertically.")
+            concatenated_data = self.data + other_img.data
+
+        # Update image data with concatenated image
+        self.data = concatenated_data
+
+    def salt_n_pepper(self):
+        """
+        Add salt and pepper noise to the image.
+        """
+        if self.data is None:
+            raise RuntimeError("No image data to process.")
+
+        import random
+
+        for i in range(len(self.data)):
+            for j in range(len(self.data[0])):
+                rand = random.random()
+                if rand < 0.2:
+                    self.data[i][j] = 0  # Pepper noise (black)
+                elif rand > 0.8:
+                    self.data[i][j] = 255  # Salt noise (white)
 
     def segment(self):
-        # TODO remove the `raise` below, and write your implementation
-        raise NotImplementedError()
+        """
+        Segment the image into meaningful parts.
+        """
+        if self.data is None:
+            raise RuntimeError("No image data to process.")
+
+        for i in range(len(self.data)):
+            for j in range(len(self.data[0])):
+                if self.data[i][j] > 100:
+                    self.data[i][j] = 255  # White
+                else:
+                    self.data[i][j] = 0  # Black
+
+
