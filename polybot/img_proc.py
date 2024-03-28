@@ -1,5 +1,6 @@
 from pathlib import Path
 from matplotlib.image import imread, imsave
+import random
 
 
 def rgb2gray(rgb):
@@ -80,31 +81,9 @@ class Img:
 
         self.data = rotated_data
 
-    def concat(self, other_img, direction='horizontal'):
-        if self.data is None or other_img.data is None:
-            raise RuntimeError("No image data to process.")
-
-        # Check compatibility of image dimensions for concatenation
-        if direction == 'horizontal':
-            if len(self.data) != len(other_img.data):
-                raise RuntimeError("Images have different heights. Cannot concatenate horizontally.")
-            concatenated_data = [self.data[i] + other_img.data[i] for i in range(len(self.data))]
-        else:  # vertical concatenation
-            if len(self.data[0]) != len(other_img.data[0]):
-                raise RuntimeError("Images have different widths. Cannot concatenate vertically.")
-            concatenated_data = self.data + other_img.data
-
-        # Update image data with concatenated image
-        self.data = concatenated_data
-
     def salt_n_pepper(self):
-        """
-        Add salt and pepper noise to the image.
-        """
         if self.data is None:
             raise RuntimeError("No image data to process.")
-
-        import random
 
         for i in range(len(self.data)):
             for j in range(len(self.data[0])):
@@ -115,9 +94,6 @@ class Img:
                     self.data[i][j] = 255  # Salt noise (white)
 
     def segment(self):
-        """
-        Segment the image into meaningful parts.
-        """
         if self.data is None:
             raise RuntimeError("No image data to process.")
 
@@ -128,4 +104,6 @@ class Img:
                 else:
                     self.data[i][j] = 0  # Black
 
+    def concat(self, other_img, direction='horizontal'):
+        raise NotImplementedError()
 
